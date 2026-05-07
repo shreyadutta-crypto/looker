@@ -73,6 +73,12 @@ explore: order_items {
     relationship: one_to_one
     sql_on: ${order_items.user_id} = ${customer_stats.user_id} ;;
   }
+
+  join: user_order_facts {
+    type: left_outer
+    sql_on: ${order_items.user_id} = ${user_order_facts.user_id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: events {
