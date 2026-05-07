@@ -1,8 +1,7 @@
 view: customer_stats {
   derived_table: {
-    # This makes it a PDT. Adjust the trigger logic to your needs.
-    datagroup_trigger: ecommerce_default_datagroup
-    publish_as_db_view: yes
+    # REMOVE: datagroup_trigger or persist_for
+    # This now runs as a subquery every time.
     sql:
       SELECT
         user_id,
@@ -16,10 +15,9 @@ view: customer_stats {
       ;;
   }
 
-  # --- Dimensions ---
-
   dimension: user_id {
     primary_key: yes
+    hidden: yes # Hide this because you'll join on it
     type: number
     sql: ${TABLE}.user_id ;;
   }
@@ -35,31 +33,19 @@ view: customer_stats {
     sql: ${TABLE}.total_orders ;;
   }
 
-  dimension_group: first_order {
-    type: time
-    timeframes: [raw, date, week, month, year]
-    sql: ${TABLE}.first_order_date ;;
-  }
-
+  # Use the _raw version for calculations to avoid errors
   dimension_group: last_order {
     type: time
-    timeframes: [raw, date, week, month, year]
+    timeframes: [raw, date, month, year]
     sql: ${TABLE}.last_order_date ;;
-  }
-
-  dimension: average_order_value {
-    type: number
-    value_format_name: usd
-    sql: ${TABLE}.average_order_value ;;
   }
 
   dimension: rfm_segment {
     type: string
-    description: "Categorizes users by their spending and recency"
     sql:
       CASE
         WHEN ${total_spend} > 500 THEN 'High Value'
-        WHEN DATE_DIFF(CURRENT_DATE(), DATE(${last_order_date}), DAY) > 90 THEN 'At Risk'
+        WHEN DATE_DIFF(CURRENT_DATE(), DATE(${last_order_raw}), DAY) > 90 THEN 'At Risk'
         WHEN ${total_orders} > 5 THEN 'Loyal Customer'
         ELSE 'Standard'
       END ;;
