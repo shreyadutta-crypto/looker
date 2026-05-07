@@ -8,7 +8,7 @@ view: user_order_facts {
         MIN(created_at) AS first_order_date,
         MAX(created_at) AS latest_order_date,
         # Standard SQL DATEDIFF - adjust syntax if using BigQuery (DATE_DIFF)
-        DATEDIFF(day, MIN(created_at), MAX(created_at)) AS customer_lifespan_days
+        DATE_DIFF(day, MIN(created_at), MAX(created_at)) AS customer_lifespan_days
       FROM order_items
       GROUP BY 1
     ;;
