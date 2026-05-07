@@ -71,7 +71,7 @@ explore: order_items {
   join: customer_stats {
     type: left_outer
     relationship: one_to_one
-    sql_on: ${users.id} = ${customer_stats.user_id} ;;
+    sql_on: ${order_items.user_id} = ${customer_stats.user_id} ;;
   }
 }
 
