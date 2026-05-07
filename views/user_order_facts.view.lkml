@@ -7,14 +7,13 @@ view: user_order_facts {
         SUM(sale_price) AS lifetime_revenue,
         MIN(created_at) AS first_order_date,
         MAX(created_at) AS latest_order_date,
-        # Standard SQL DATEDIFF - adjust syntax if using BigQuery (DATE_DIFF)
-        DATE_DIFF(day, MIN(created_at), MAX(created_at)) AS customer_lifespan_days
+        -- Correct BigQuery Syntax: DATE_DIFF(end, start, unit)
+        DATE_DIFF(CAST(MAX(created_at) AS DATE), CAST(MIN(created_at) AS DATE), DAY) AS customer_lifespan_days
       FROM order_items
       GROUP BY 1
     ;;
   }
 
-  # --- DIMENSIONS ---
   dimension: user_id {
     primary_key: yes
     hidden: yes
@@ -38,20 +37,24 @@ view: user_order_facts {
     sql: ${TABLE}.customer_lifespan_days ;;
   }
 
-  # --- MEASURES ---
+  # --- KPI MEASURES FOR TILES ---
+
   measure: average_cltv {
+    label: "Average CLTV"
     type: average
     sql: ${lifetime_revenue} ;;
     value_format_name: usd
   }
 
   measure: average_purchase_frequency {
+    label: "Avg Purchase Frequency"
     type: average
     sql: ${lifetime_order_count} ;;
     value_format: "0.##"
   }
 
   measure: average_customer_lifespan_days {
+    label: "Avg Customer Lifespan (Days)"
     type: average
     sql: ${customer_lifespan_days} ;;
     value_format: "0"
