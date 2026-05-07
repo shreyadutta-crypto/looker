@@ -80,10 +80,11 @@ view: order_items {
   measure: total_revenue {
     type: sum
     sql: ${sale_price} ;;
-    value_format_name: usd
+    # value_format_name: usd   <-- Remove or comment this out (see Note below)
     drill_fields: [id, orders.id, users.name]
-    value_format: "$#,##0,\\\" K\\\""
+    value_format: "$#,##0,\" K\""
   }
+
 
   measure: count {
     type: count
