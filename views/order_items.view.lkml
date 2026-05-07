@@ -82,6 +82,7 @@ view: order_items {
     sql: ${sale_price} ;;
     value_format_name: usd
     drill_fields: [id, orders.id, users.name]
+    value_format: "$#,##0,\\\" K\\\""
   }
 
   measure: count {
