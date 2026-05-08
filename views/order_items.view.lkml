@@ -105,12 +105,12 @@ view: order_items {
   }
 
   measure: average_shipping_time {
-    description: "Average days from order creation to shipping"
+    description: "Average hours from order creation to shipping"
     type: average
-    # Use TIMESTAMP to allow HOUR calculations, then divide by 24 for days
-    sql: DATE_DIFF(${shipped_raw}, ${created_raw}, HOUR) / 24.0 ;;
-    value_format: "0.00"
+    sql: TIMESTAMP_DIFF(${shipped_raw}, ${created_raw}, HOUR) ;;
+    value_format: "0.0"
   }
+
 
 
   measure: average_delivery_time {
