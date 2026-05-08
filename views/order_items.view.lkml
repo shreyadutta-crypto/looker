@@ -107,7 +107,7 @@ view: order_items {
   measure: average_shipping_time {
     description: "Average days from order creation to shipping"
     type: average
-    sql: DATE_DIFF(CAST(${shipped_date} AS DATE), CAST(${created_date} AS DATE), DAY) ;;
+    sql: DATE_DIFF(CAST(${shipped_date} AS DATE), CAST(${created_date} AS DATE), HOUR) ;;
     value_format: "0.0"
   }
 
