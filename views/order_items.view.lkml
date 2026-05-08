@@ -91,6 +91,33 @@ view: order_items {
     drill_fields: [detail*]
   }
 
+  measure: count_returned {
+    type: count
+    filters: [status: "Returned"]
+    hidden: yes # Keeps the field picker clean
+  }
+
+  measure: return_rate {
+    description: "Percentage of total items that were returned"
+    type: number
+    sql: 1.0 * ${count_returned} / NULLIF(${count}, 0) ;;
+    value_format_name: percent_2
+  }
+
+  measure: average_shipping_time {
+    description: "Average days from order creation to shipping"
+    type: average
+    sql: DATE_DIFF(CAST(${shipped_date} AS DATE), CAST(${created_date} AS DATE), DAY) ;;
+    value_format: "0.0"
+  }
+
+  measure: average_delivery_time {
+    description: "Average days from shipping to delivery"
+    type: average
+    sql: DATE_DIFF(CAST(${delivered_date} AS DATE), CAST(${shipped_date} AS DATE), DAY) ;;
+    value_format: "0.0"
+  }
+
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
