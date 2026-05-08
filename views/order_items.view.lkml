@@ -111,12 +111,10 @@ view: order_items {
     value_format: "0.0"
   }
 
-
-
   measure: average_delivery_time {
     description: "Average days from shipping to delivery"
     type: average
-    sql: DATE_DIFF(CAST(${delivered_date} AS DATE), CAST(${shipped_date} AS DATE), DAY) ;;
+    sql: TIMESTAMP_DIFF(${delivered_raw}, ${shipped_raw}, HOUR) ;;
     value_format: "0.0"
   }
 
