@@ -118,6 +118,15 @@ view: order_items {
     value_format: "0.0"
   }
 
+  measure: new_customer_revenue_percentage {
+    description: "Revenue from first-time users vs total revenue"
+    type: number
+    sql:
+      1.0 * SUM(CASE WHEN ${user_order_facts.lifetime_order_count} = 1 THEN ${sale_price} ELSE 0 END)
+      / NULLIF(SUM(${sale_price}), 0) ;;
+    value_format_name: percent_1
+  }
+
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
